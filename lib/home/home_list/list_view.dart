@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_app1/app_Colors.dart';
+import 'package:to_do_app1/firebase.dart';
 import 'package:to_do_app1/home/home_list/edit_list.dart';
 
+import '../../model/task.dart';
+import '../../providers/list_proivder.dart';
+
 class TaskList extends StatelessWidget {
-  const TaskList({super.key});
+  // const TaskList({super.key});
+  Task task;
+
+  TaskList({required this.task});
 
   @override
   Widget build(BuildContext context) {
+    var listproivder = Provider.of<ListProvider>(context);
     return Container(
       margin: EdgeInsets.all(10),
       child: Slidable(
@@ -20,7 +29,13 @@ class TaskList extends StatelessWidget {
             // A SlidableAction can have an icon and/or a label.
             SlidableAction(
               borderRadius: BorderRadius.circular(15),
-              onPressed: (context) {},
+              onPressed: (context) {
+                FireBase.deletetaskfromFireStore(task)
+                    .timeout(Duration(seconds: 1), onTimeout: () {
+                  print("TASK DELETED");
+                  listproivder.getAllTasksFromFireStore();
+                });
+              },
               backgroundColor: AppColors.RedColor,
               foregroundColor: AppColors.WhiteColor,
               icon: Icons.delete,
@@ -66,13 +81,14 @@ class TaskList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    "Title",
+                    task.Title,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
                         .copyWith(color: AppColors.PrimaryColor),
                   ),
-                  Text("Desc", style: Theme.of(context).textTheme.bodyMedium),
+                  Text(task.Description,
+                      style: Theme.of(context).textTheme.bodyMedium),
                 ],
               )),
               Container(

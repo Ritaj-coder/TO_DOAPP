@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_app1/firebase.dart';
 import 'package:to_do_app1/model/task.dart';
+
+import '../../providers/list_proivder.dart';
 
 class AddTaskBottom extends StatefulWidget {
   @override
@@ -12,11 +15,12 @@ class _AddTaskBottomState extends State<AddTaskBottom> {
   String title = "";
   String description = "";
   var selectDate = DateTime.now();
-
+  late ListProvider plistprovider;
   var formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    plistprovider = Provider.of<ListProvider>(context);
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.all(12),
@@ -112,6 +116,7 @@ class _AddTaskBottomState extends State<AddTaskBottom> {
       FireBase.addtasktoFireStore(task).timeout(Duration(seconds: 1),
           onTimeout: () {
         print("task added");
+        plistprovider.getAllTasksFromFireStore();
         Navigator.pop(context);
       });
     }
