@@ -8,12 +8,19 @@ import 'package:to_do_app1/home/home_list/edit_list.dart';
 import '../../model/task.dart';
 import '../../providers/list_proivder.dart';
 
-class TaskList extends StatelessWidget {
+class TaskList extends StatefulWidget {
   // const TaskList({super.key});
   Task task;
+  static const String routename = "tasklist";
 
   TaskList({required this.task});
 
+  @override
+  State<TaskList> createState() => _TaskListState();
+}
+
+class _TaskListState extends State<TaskList> {
+  bool isTaskDone = false;
   @override
   Widget build(BuildContext context) {
     var listproivder = Provider.of<ListProvider>(context);
@@ -30,7 +37,7 @@ class TaskList extends StatelessWidget {
             SlidableAction(
               borderRadius: BorderRadius.circular(15),
               onPressed: (context) {
-                FireBase.deletetaskfromFireStore(task)
+                FireBase.deletetaskfromFireStore(widget.task)
                     .timeout(Duration(seconds: 1), onTimeout: () {
                   print("TASK DELETED");
                   listproivder.getAllTasksFromFireStore();
@@ -52,7 +59,10 @@ class TaskList extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               onPressed: (context) {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditList()));
+                    MaterialPageRoute(
+                        builder: (context) => EditList(
+                              task: widget.task,
+                            )));
               },
               backgroundColor: AppColors.PrimaryColor,
               foregroundColor: AppColors.WhiteColor,
@@ -74,33 +84,52 @@ class TaskList extends StatelessWidget {
                 margin: EdgeInsets.all(15),
                 height: MediaQuery.of(context).size.height * 0.1,
                 width: 6,
-                color: AppColors.PrimaryColor,
+                color: widget.task.isdone
+                    ? AppColors.GreenyColor
+                    : AppColors.PrimaryColor,
               ),
               Expanded(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    task.Title,
+                    widget.task.Title,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyMedium!
-                        .copyWith(color: AppColors.PrimaryColor),
+                        .bodyMedium!.copyWith(
+                        color: widget.task.isdone
+                            ? AppColors.GreenyColor
+                            : AppColors.PrimaryColor),
                   ),
-                  Text(task.Description,
+                  Text(widget.task.Description,
                       style: Theme.of(context).textTheme.bodyMedium),
                 ],
               )),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
+              widget.task.isdone
+                  ? Text("Done!",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: AppColors.GreenyColor))
+                  : Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                      decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: AppColors.PrimaryColor),
-                child: Icon(
-                  Icons.check,
-                  size: 45,
-                  color: AppColors.WhiteColor,
-                ),
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            widget.task.isdone = true;
+                            FireBase.updateIsDone(widget.task);
+                          });
+                        },
+                        icon: Icon(
+                          Icons.check,
+                          size: 45,
+                          color: AppColors.WhiteColor,
+                        ),
+                      ),
               ),
             ],
           ),

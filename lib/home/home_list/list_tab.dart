@@ -34,7 +34,7 @@ class _TaskTabState extends State<TaskTab> {
           ),
           Expanded(
             child: listproivder.taskslist.isEmpty
-                ? Text("NO TASKS ADDED")
+                ? Center(child: Text("NO TASKS ADDED"))
                 : ListView.builder(
                     itemBuilder: (context, index) {
                       return TaskList(

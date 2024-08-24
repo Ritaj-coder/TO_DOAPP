@@ -121,6 +121,8 @@ class RegisterScreen extends StatelessWidget {
           email: emailcontroller.text,
           password: passcontroller.text,
         );
+        print("Register Succeded");
+        print(credential.user?.uid ?? "");
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');
