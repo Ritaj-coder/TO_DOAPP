@@ -23,7 +23,26 @@ class FireBase {
     return taskdoc.set(task);
   }
 
-  static Future<void> deletetaskfromFireStore(Task task) async {
-    getTaskCollection().doc(task.ID).delete();
+  static Future<void> deletetaskfromFireStore(Task task) {
+    return getTaskCollection().doc(task.ID).delete();
+  }
+
+  static Future<void> updateIsDone(Task task) async {
+    return await getTaskCollection()
+        .doc(task.ID)
+        .update({'isDone': task.isdone});
+  }
+
+  static Future<void> updateTask(Task task) async {
+    try {
+      await getTaskCollection().doc(task.ID).update({
+        'title': task.Title,
+        'description': task.Description,
+        'time': task.dateTime,
+        'isDone': task.isdone,
+      });
+    } catch (e) {
+      print("Error updating task: $e");
+    }
   }
 }

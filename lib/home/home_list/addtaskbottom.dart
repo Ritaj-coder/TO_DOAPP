@@ -36,7 +36,7 @@ class _AddTaskBottomState extends State<AddTaskBottom> {
                       padding: const EdgeInsets.all(12.0),
                       child: TextFormField(
                         onChanged: (text) {
-                          text = title;
+                          title = text;
                         },
                         validator: (text) {
                           if (text == null || text.isEmpty) {
@@ -53,7 +53,7 @@ class _AddTaskBottomState extends State<AddTaskBottom> {
                       padding: const EdgeInsets.all(12.0),
                       child: TextFormField(
                         onChanged: (text) {
-                          text = description;
+                          description = text;
                         },
                         validator: (text) {
                           if (text == null || text.isEmpty) {
