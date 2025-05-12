@@ -5,6 +5,7 @@ import 'package:to_do_app1/firebase.dart';
 import 'package:to_do_app1/model/task.dart';
 
 import '../../providers/list_proivder.dart';
+import '../../providers/user_provider.dart';
 
 class AddTaskBottom extends StatefulWidget {
   @override
@@ -111,12 +112,17 @@ class _AddTaskBottomState extends State<AddTaskBottom> {
 
   void addtask() {
     if (formkey.currentState!.validate() == true) {
+      var userprovider = Provider.of<UserProvider>(context, listen: false);
       Task task =
           Task(Title: title, Description: description, dateTime: selectDate);
-      FireBase.addtasktoFireStore(task).timeout(Duration(seconds: 1),
-          onTimeout: () {
+      FireBase.addtasktoFireStore(task, userprovider.currentuser!.ID)
+          .then((value) {
         print("task added");
-        plistprovider.getAllTasksFromFireStore();
+        plistprovider.getAllTasksFromFireStore(userprovider.currentuser!.ID);
+        Navigator.pop(context);
+      }).timeout(Duration(seconds: 1), onTimeout: () {
+        print("task added");
+        plistprovider.getAllTasksFromFireStore(userprovider.currentuser!.ID);
         Navigator.pop(context);
       });
     }

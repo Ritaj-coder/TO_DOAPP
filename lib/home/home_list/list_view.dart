@@ -7,6 +7,7 @@ import 'package:to_do_app1/home/home_list/edit_list.dart';
 
 import '../../model/task.dart';
 import '../../providers/list_proivder.dart';
+import '../../providers/user_provider.dart';
 
 class TaskList extends StatefulWidget {
   // const TaskList({super.key});
@@ -37,10 +38,18 @@ class _TaskListState extends State<TaskList> {
             SlidableAction(
               borderRadius: BorderRadius.circular(15),
               onPressed: (context) {
-                FireBase.deletetaskfromFireStore(widget.task)
-                    .timeout(Duration(seconds: 1), onTimeout: () {
+                var userprovider =
+                    Provider.of<UserProvider>(context, listen: false);
+                FireBase.deletetaskfromFireStore(
+                        widget.task, userprovider.currentuser!.ID)
+                    .then((value) {
                   print("TASK DELETED");
-                  listproivder.getAllTasksFromFireStore();
+                  listproivder
+                      .getAllTasksFromFireStore(userprovider.currentuser!.ID);
+                }).timeout(Duration(seconds: 1), onTimeout: () {
+                  print("TASK DELETED");
+                  listproivder
+                      .getAllTasksFromFireStore(userprovider.currentuser!.ID);
                 });
               },
               backgroundColor: AppColors.RedColor,
@@ -120,8 +129,12 @@ class _TaskListState extends State<TaskList> {
                       child: IconButton(
                         onPressed: () {
                           setState(() {
+                            var userprovider = Provider.of<UserProvider>(
+                                context,
+                                listen: false);
                             widget.task.isdone = true;
-                            FireBase.updateIsDone(widget.task);
+                            FireBase.updateIsDone(
+                                widget.task, userprovider.currentuser!.ID);
                           });
                         },
                         icon: Icon(
