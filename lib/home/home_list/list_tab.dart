@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:to_do_app1/home/home_list/list_view.dart';
 import 'package:to_do_app1/providers/list_proivder.dart';
 
+import '../../providers/user_provider.dart';
+
 class TaskTab extends StatefulWidget {
   @override
   State<TaskTab> createState() => _TaskTabState();
@@ -14,8 +16,9 @@ class _TaskTabState extends State<TaskTab> {
   @override
   Widget build(BuildContext context) {
     var listproivder = Provider.of<ListProvider>(context);
+    var userprovider = Provider.of<UserProvider>(context);
     if (listproivder.taskslist.isEmpty) {
-      listproivder.getAllTasksFromFireStore();
+      listproivder.getAllTasksFromFireStore(userprovider.currentuser!.ID);
     }
 
     return Container(
@@ -24,7 +27,8 @@ class _TaskTabState extends State<TaskTab> {
           EasyDateTimeLine(
             initialDate: DateTime.timestamp(),
             onDateChange: (selectedDate) {
-              listproivder.changeSelectDate(selectedDate);
+              listproivder.changeSelectDate(
+                  selectedDate, userprovider.currentuser!.ID);
             },
             activeColor: const Color(0xff5D9CEC),
             dayProps: const EasyDayProps(

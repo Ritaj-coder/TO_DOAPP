@@ -1,7 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app1/alert_dialog.dart';
 import 'package:to_do_app1/app_Colors.dart';
+import 'package:to_do_app1/firebase.dart';
 import 'package:to_do_app1/home/auth/customer_formfield.dart';
+import 'package:to_do_app1/home/home_screen.dart';
+import 'package:to_do_app1/model/my_user.dart';
+
+import '../../../providers/user_provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const String routename = "Register";
@@ -95,7 +102,7 @@ class RegisterScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                           onPressed: () {
-                            register();
+                            register(context);
                           },
                           child: Text(
                             "CREATE ACCOUNT",
@@ -113,24 +120,70 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  void register() async {
-    if (formkey.currentState?.validate() == true) {
+  Future<void> register(BuildContext context) async {
+    //todo: show loading
+    if (formkey.currentState!.validate() == true) {
+      DialogAlerts.showLoading(context: context, loadinglabel: "Loading...");
       try {
         final credential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailcontroller.text,
           password: passcontroller.text,
         );
-        print("Register Succeded");
+
+        MyUser myUser = MyUser(
+            ID: credential.user?.uid ?? '',
+            Name: namecontroller.text,
+            Email: emailcontroller.text);
+        await FireBase.addusertoFireStore(myUser);
+
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateuser(myUser);
+
+        //todo: hide loading
+        DialogAlerts.hideLoading(context);
+        //todo: show message
+        DialogAlerts.showMessage(
+            context: context,
+            content: "Register Successed",
+            title: "Success",
+            posActionName: "Ok",
+            posAction: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+            });
         print(credential.user?.uid ?? "");
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-          print('The password provided is too weak.');
+          //todo: hide loading
+          DialogAlerts.hideLoading(context);
+          //todo: show message
+          DialogAlerts.showMessage(
+              context: context,
+              content: "The password provided is too weak",
+              title: "Error",
+              posActionName: "Ok");
         } else if (e.code == 'email-already-in-use') {
-          print('The account already exists for that email.');
+          //todo: hide loading
+          DialogAlerts.hideLoading(context);
+          //todo: show message
+          DialogAlerts.showMessage(
+              context: context,
+              content: "The account already exists for that email.",
+              title: "Error",
+              posActionName: "Ok");
         }
       } catch (e) {
-        print(e);
+        //todo: hide loading
+        DialogAlerts.hideLoading(context);
+        //todo: show message
+        DialogAlerts.showMessage(
+            context: context,
+            content: e.toString(),
+            title: "Error",
+            posActionName: "Ok");
       }
     }
   }

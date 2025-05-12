@@ -7,8 +7,8 @@ class ListProvider extends ChangeNotifier {
   List<Task> taskslist = [];
   var selectdate = DateTime.now();
 
-  void getAllTasksFromFireStore() async {
-    var querySnapshot = await FireBase.getTaskCollection().get();
+  void getAllTasksFromFireStore(String uid) async {
+    var querySnapshot = await FireBase.getTaskCollection(uid).get();
 
     taskslist = querySnapshot.docs.map((doc) {
       return doc.data();
@@ -34,8 +34,8 @@ class ListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeSelectDate(DateTime newdate) {
+  void changeSelectDate(DateTime newdate, String uid) {
     selectdate = newdate;
-    getAllTasksFromFireStore();
+    getAllTasksFromFireStore(uid);
   }
 }
