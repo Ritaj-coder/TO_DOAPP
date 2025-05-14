@@ -24,84 +24,83 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.10,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.12,
         title: Text("WELCOME BACK",
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(color: AppColors.WhiteColor)),
+                ?.copyWith(color: AppColors.WhiteColor, fontSize: 24)),
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          child: Column(
-            children: [
-              Form(
-                  key: formkey,
-                  child: Column(
-                    children: [
-                      CustomerForm(
-                        label: "EMAIL",
-                        validator: (text) {
-                          if (text == null || text.trim().isEmpty) {
-                            return "PLEASE ENTER EMAIL";
-                          }
-                          final bool emailvalid = RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(emailcontroller.text);
-                          if (!emailvalid) {
-                            return "PLEASE ENTER VALID EMAIL";
-                          }
-                          return null;
-                        },
-                        controller: emailcontroller,
-                        keyboardtype: TextInputType.emailAddress,
-                      ),
-                      CustomerForm(
-                        label: "PASSWORD",
-                        validator: (text) {
-                          if (text == null || text.trim().isEmpty) {
-                            return "PLEASE ENTER PASSWORD";
-                          }
-                          if (text.length < 6) {
-                            return "PASSWORD MUST BE AT LEAST 6";
-                          }
-                          return null;
-                        },
-                        controller: passcontroller,
-                        obscureText: true,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                            onPressed: () {
-                              login(context);
-                            },
-                            child: Text(
-                              "LOGIN",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: AppColors.WhiteColor),
-                            )),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, RegisterScreen.routename);
-                            },
-                            child: Text(
-                              "OR Create An Account",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: AppColors.PrimaryColor),
-                            )),
-                      ),
-                    ],
-                  ))
-            ],
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Form(
+                key: formkey,
+                child: Column(
+                  children: [
+                    CustomerForm(
+                      label: "EMAIL",
+                      validator: (text) {
+                        if (text == null || text.trim().isEmpty) {
+                          return "PLEASE ENTER EMAIL";
+                        }
+                        final bool emailvalid = RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(emailcontroller.text);
+                        if (!emailvalid) {
+                          return "PLEASE ENTER VALID EMAIL";
+                        }
+                        return null;
+                      },
+                      controller: emailcontroller,
+                      keyboardtype: TextInputType.emailAddress,
+                    ),
+                    CustomerForm(
+                      label: "PASSWORD",
+                      validator: (text) {
+                        if (text == null || text.trim().isEmpty) {
+                          return "PLEASE ENTER PASSWORD";
+                        }
+                        if (text.length < 6) {
+                          return "PASSWORD MUST BE AT LEAST 6";
+                        }
+                        return null;
+                      },
+                      controller: passcontroller,
+                      obscureText: true,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            login(context);
+                          },
+                          child: Text(
+                            "LOGIN",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: AppColors.WhiteColor),
+                          )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RegisterScreen.routename);
+                          },
+                          child: Text(
+                            "OR Create An Account",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: AppColors.PrimaryColor),
+                          )),
+                    ),
+                  ],
+                )),
           ),
         ),
       ),
