@@ -5,6 +5,7 @@ import 'package:to_do_app1/alert_dialog.dart';
 import 'package:to_do_app1/app_Colors.dart';
 import 'package:to_do_app1/firebase.dart';
 import 'package:to_do_app1/home/auth/customer_formfield.dart';
+import 'package:to_do_app1/home/auth/login/login_screen.dart';
 import 'package:to_do_app1/home/home_screen.dart';
 import 'package:to_do_app1/model/my_user.dart';
 
@@ -26,17 +27,18 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.10,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.12,
         title: Text("Create Account",
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(color: AppColors.WhiteColor)),
+                ?.copyWith(color: AppColors.WhiteColor, fontSize: 24)),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Form(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Form(
                 key: formkey,
                 child: Column(
                   children: [
@@ -101,6 +103,9 @@ class RegisterScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 28),
+                              backgroundColor: AppColors.PrimaryColor),
                           onPressed: () {
                             register(context);
                           },
@@ -111,10 +116,24 @@ class RegisterScreen extends StatelessWidget {
                                 .bodyMedium!
                                 .copyWith(color: AppColors.WhiteColor),
                           )),
-                    )
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, LoginScreen.routename);
+                          },
+                          child: Text(
+                            "OR Login",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: AppColors.PrimaryColor),
+                          )),
+                    ),
                   ],
-                ))
-          ],
+                )),
+          ),
         ),
       ),
     );
