@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? "${AppLocalizations.of(context)!.app_title}"
                   " ${userprovider.currentuser!.Name} "
               : AppLocalizations.of(context)!.settings,
-          style: Theme.of(context).textTheme.bodyLarge,
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 25),
         ),
         actions: [
           IconButton(
